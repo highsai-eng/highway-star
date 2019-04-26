@@ -1,5 +1,5 @@
 package operator
 
 type Operator interface {
-	Operate()
+	Operate() error
 }
