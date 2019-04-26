@@ -3,25 +3,30 @@ package operator
 import (
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/highway-star/model"
 	"net/http"
+	"strings"
 )
 
 type ScrapingOperator struct {
 }
 
-func (o *ScrapingOperator) Operate() error {
+func (o *ScrapingOperator) Operate(articles *[]model.Article) error {
 
-	doc, err := o.fetchHtml("http://www.ilbe.com/politics")
+	listDoc, err := o.fetchHtml("http://www.ilbe.com/politics")
 	if err != nil {
 		return err
 	}
 
-	doc.Find("tbody").Find("tr").Each(func(index int, s *goquery.Selection) {
+	listDoc.Find("tbody").Find("tr").Each(func(index int, s *goquery.Selection) {
 		url, exists := s.Find(".title").Find("a").Attr("href")
 
-		if exists {
-			fmt.Printf("url : %s", url)
-			fmt.Println()
+		if exists && strings.HasPrefix(url, "http") {
+
+			detailDoc, _ := o.fetchHtml(url)
+
+			article := model.Article{Title: strings.TrimSpace(detailDoc.Find("div.title").Text())}
+			*articles = append(*articles, article)
 		}
 	})
 
@@ -29,6 +34,8 @@ func (o *ScrapingOperator) Operate() error {
 }
 
 func (o *ScrapingOperator) fetchHtml(url string) (*goquery.Document, error) {
+
+	// TODO: add sleep.
 
 	res, err := http.Get(url)
 	if err != nil {
