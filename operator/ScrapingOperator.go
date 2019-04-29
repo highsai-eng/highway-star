@@ -2,16 +2,17 @@ package operator
 
 import (
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
-	"github.com/highway-star/model"
 	"net/http"
 	"strings"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/highway-star/model"
 )
 
 type ScrapingOperator struct {
 }
 
-func (o *ScrapingOperator) Operate(articles *[]model.Article) error {
+func (o *ScrapingOperator) Scraping(articles *[]model.Article) error {
 
 	listDoc, err := o.fetchHtml("http://www.ilbe.com/politics")
 	if err != nil {
@@ -19,6 +20,7 @@ func (o *ScrapingOperator) Operate(articles *[]model.Article) error {
 	}
 
 	listDoc.Find("tbody").Find("tr").Each(func(index int, s *goquery.Selection) {
+
 		url, exists := s.Find(".title").Find("a").Attr("href")
 
 		if exists && strings.HasPrefix(url, "http") {

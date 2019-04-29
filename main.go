@@ -1,19 +1,33 @@
 package main
 
 import (
-	"fmt"
+	"os"
+
 	"github.com/highway-star/model"
 	"github.com/highway-star/operator"
 )
 
 func main() {
-	fmt.Println("Hello World!")
+
 	scraping := operator.ScrapingOperator{}
 	translator := operator.TranslateOperator{}
+	uploader := operator.UploadOperator{}
 
-	rawArticles := make([]model.Article, 0)
-	translatedArticles := make([]model.Article, 0)
+	srcArticles := make([]model.Article, 0)
+	dstArticles := make([]model.Article, 0)
 
-	scraping.Operate(&rawArticles)
-	translator.Operate(rawArticles, &translatedArticles)
+	if err := scraping.Scraping(&srcArticles); err != nil {
+		// TODO: log export
+		os.Exit(1)
+	}
+
+	if err := translator.Translate(srcArticles, &dstArticles); err != nil {
+		// TODO: log export
+		os.Exit(2)
+	}
+
+	if err := uploader.Upload(); err != nil {
+		// TODO: log export
+		os.Exit(3)
+	}
 }
