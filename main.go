@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/highway-star/model"
@@ -29,5 +30,15 @@ func main() {
 	if err := uploader.Upload(); err != nil {
 		// TODO: log export
 		os.Exit(3)
+	}
+
+	for _, el := range srcArticles {
+		fmt.Printf("befor:%s", el.Title)
+		fmt.Println()
+	}
+
+	for _, el := range dstArticles {
+		fmt.Printf("after:%s", el.Title)
+		fmt.Println()
 	}
 }
