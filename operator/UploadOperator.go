@@ -12,8 +12,8 @@ type UploadOperator struct {
 }
 
 const (
-	username          = "highway-star"
-	password          = "GM58 60In qbHP FNPp f72F g1Hb"
+	username          = "kaito.higa"
+	password          = "8xyc WFyN o9Pi Cgy5 oujp uX3U"
 	wordPressEndpoint = "http://nida.xsrv.jp/wp-json/wp/v2/posts"
 )
 
