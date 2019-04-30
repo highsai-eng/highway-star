@@ -27,7 +27,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	if err := uploader.Upload(); err != nil {
+	if err := uploader.Upload(dstArticles); err != nil {
 		// TODO: log export
 		os.Exit(3)
 	}

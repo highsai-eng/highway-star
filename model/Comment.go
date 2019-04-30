@@ -7,7 +7,7 @@ type Comment struct {
 	RepliedNo int8
 	Name      string
 	Main      bool
-	Text      string
+	Content   string
 	like      int8
 	dislike   int8
 	Published time.Time

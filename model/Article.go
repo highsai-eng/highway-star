@@ -4,7 +4,7 @@ import "time"
 
 type Article struct {
 	Title          string
-	Description    string
+	Content        string
 	ThumbnailImage string
 	OtherImages    []string
 	Tags           []string
