@@ -2,13 +2,22 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/highway-star/model"
 	"github.com/highway-star/operator"
 )
 
+func init() {
+	log.SetPrefix("[highway-star]")
+	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
+	log.SetOutput(os.Stdout)
+}
+
 func main() {
+
+	log.Print("main process has started.")
 
 	scraping := operator.ScrapingOperator{}
 	translator := operator.TranslateOperator{}
@@ -18,18 +27,15 @@ func main() {
 	dstArticles := make([]model.Article, 0)
 
 	if err := scraping.Scraping(&srcArticles); err != nil {
-		// TODO: log export
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
 	if err := translator.Translate(srcArticles, &dstArticles); err != nil {
-		// TODO: log export
-		os.Exit(2)
+		log.Fatal(err)
 	}
 
 	if err := uploader.Upload(dstArticles); err != nil {
-		// TODO: log export
-		os.Exit(3)
+		log.Fatal(err)
 	}
 
 	for _, el := range srcArticles {
@@ -41,4 +47,6 @@ func main() {
 		fmt.Printf("after:%s", el.Title)
 		fmt.Println()
 	}
+
+	log.Print("main process has ended.")
 }

@@ -2,6 +2,7 @@ package operator
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -37,15 +38,21 @@ func (o *ScrapingOperator) Scraping(articles *[]model.Article) error {
 
 func (o *ScrapingOperator) fetchHtml(url string) (*goquery.Document, error) {
 
+	log.Printf("start fetching HTML. url:%s", url)
+
 	// TODO: add sleep.
+	//time.Sleep(60 * time.Second)
 
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch web page. url:%s", url)
 	}
 
-	// TODO: error catch.
-	defer res.Body.Close()
+	defer func() {
+		if err := res.Body.Close(); err != nil {
+			// TODO: log export
+		}
+	}()
 
 	if res.StatusCode != 200 {
 		return nil, fmt.Errorf("failed to fetch web page. url:%s, code:%d, message:%s", url, res.StatusCode, res.Status)
@@ -55,6 +62,8 @@ func (o *ScrapingOperator) fetchHtml(url string) (*goquery.Document, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse HTML. url:%s", url)
 	}
+
+	log.Printf("end fetching HTML.")
 
 	return doc, nil
 }
