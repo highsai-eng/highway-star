@@ -19,20 +19,20 @@ func main() {
 
 	log.Print("main process has started.")
 
-	//scraper := operator.ScrapeOperator{}
-	//translator := operator.TranslateOperator{}
+	scraper := operator.ScrapeOperator{}
+	translator := operator.TranslateOperator{}
 	uploader := operator.UploadOperator{}
 
 	srcArticles := make([]model.Article, 0)
 	dstArticles := make([]model.Article, 0)
 
-	//if err := scraper.Scrape(&srcArticles); err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//if err := translator.Translate(srcArticles, &dstArticles); err != nil {
-	//	log.Fatal(err)
-	//}
+	if err := scraper.Scrape(&srcArticles); err != nil {
+		log.Fatal(err)
+	}
+
+	if err := translator.Translate(srcArticles, &dstArticles); err != nil {
+		log.Fatal(err)
+	}
 
 	if err := uploader.Upload(dstArticles); err != nil {
 		log.Fatal(err)
