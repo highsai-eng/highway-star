@@ -13,7 +13,16 @@ import (
 type ScrapeOperator struct {
 }
 
-func (o *ScrapeOperator) Scrape(articles *[]model.Article) error {
+func (o *ScrapeOperator) Scrape(keyword string, articles *[]model.Article) error {
+
+	//searchedPage, err := o.fetchHtml(
+	//	"http://www.ilbe.com/index.php" +
+	//		"?act=IS" +
+	//		"&where=document" +
+	//		"&is_keyword=%EC%9C%84%EC%95%88%EB%B6%80" +
+	//		"&mid=index" +
+	//		"&search_target=title" +
+	//		"&page=1")
 
 	listDoc, err := o.fetchHtml("http://www.ilbe.com/politics")
 	if err != nil {

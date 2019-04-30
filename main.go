@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -15,9 +16,15 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
+var (
+	keyword = flag.String("keyword", "위안부", "Specify the word to be searched in ilbe.")
+)
+
 func main() {
 
 	log.Print("main process has started.")
+
+	flag.Parse()
 
 	scraper := operator.ScrapeOperator{}
 	translator := operator.TranslateOperator{}
@@ -26,7 +33,7 @@ func main() {
 	srcArticles := make([]model.Article, 0)
 	dstArticles := make([]model.Article, 0)
 
-	if err := scraper.Scrape(&srcArticles); err != nil {
+	if err := scraper.Scrape(*keyword, &srcArticles); err != nil {
 		log.Fatal(err)
 	}
 
