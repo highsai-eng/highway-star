@@ -19,14 +19,14 @@ func main() {
 
 	log.Print("main process has started.")
 
-	scraping := operator.ScrapingOperator{}
+	scraper := operator.ScrapeOperator{}
 	translator := operator.TranslateOperator{}
 	uploader := operator.UploadOperator{}
 
 	srcArticles := make([]model.Article, 0)
 	dstArticles := make([]model.Article, 0)
 
-	if err := scraping.Scraping(&srcArticles); err != nil {
+	if err := scraper.Scrape(&srcArticles); err != nil {
 		log.Fatal(err)
 	}
 

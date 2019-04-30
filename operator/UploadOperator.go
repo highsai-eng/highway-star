@@ -1,6 +1,8 @@
 package operator
 
-import "github.com/highway-star/model"
+import (
+	"github.com/highway-star/model"
+)
 
 type UploadOperator struct {
 }

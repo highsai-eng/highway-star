@@ -10,10 +10,10 @@ import (
 	"github.com/highway-star/model"
 )
 
-type ScrapingOperator struct {
+type ScrapeOperator struct {
 }
 
-func (o *ScrapingOperator) Scraping(articles *[]model.Article) error {
+func (o *ScrapeOperator) Scrape(articles *[]model.Article) error {
 
 	listDoc, err := o.fetchHtml("http://www.ilbe.com/politics")
 	if err != nil {
@@ -36,7 +36,7 @@ func (o *ScrapingOperator) Scraping(articles *[]model.Article) error {
 	return nil
 }
 
-func (o *ScrapingOperator) fetchHtml(url string) (*goquery.Document, error) {
+func (o *ScrapeOperator) fetchHtml(url string) (*goquery.Document, error) {
 
 	log.Printf("start fetching HTML. url:%s", url)
 
@@ -50,7 +50,7 @@ func (o *ScrapingOperator) fetchHtml(url string) (*goquery.Document, error) {
 
 	defer func() {
 		if err := res.Body.Close(); err != nil {
-			// TODO: log export
+			log.Print(err)
 		}
 	}()
 
