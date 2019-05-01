@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"os"
 
@@ -27,33 +26,34 @@ func main() {
 	flag.Parse()
 
 	scraper := operator.ScrapeOperator{}
-	translator := operator.TranslateOperator{}
-	uploader := operator.UploadOperator{}
+	//translator := operator.TranslateOperator{}
+	//uploader := operator.UploadOperator{}
 
-	srcArticles := make([]model.Article, 0)
-	dstArticles := make([]model.Article, 0)
+	srcArticle := model.Article{}
+	//srcArticles := make([]model.Article, 0)
+	//dstArticles := make([]model.Article, 0)
 
-	if err := scraper.Scrape(*keyword, &srcArticles); err != nil {
+	if err := scraper.Scrape(*keyword, &srcArticle); err != nil {
 		log.Fatal(err)
 	}
 
-	if err := translator.Translate(srcArticles, &dstArticles); err != nil {
-		log.Fatal(err)
-	}
+	//if err := translator.Translate(srcArticles, &dstArticles); err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//if err := uploader.Upload(dstArticles); err != nil {
+	//	log.Fatal(err)
+	//}
 
-	if err := uploader.Upload(dstArticles); err != nil {
-		log.Fatal(err)
-	}
-
-	for _, el := range srcArticles {
-		fmt.Printf("befor:%s", el.Title)
-		fmt.Println()
-	}
-
-	for _, el := range dstArticles {
-		fmt.Printf("after:%s", el.Title)
-		fmt.Println()
-	}
+	//for _, el := range srcArticles {
+	//	fmt.Printf("befor:%s", el.Title)
+	//	fmt.Println()
+	//}
+	//
+	//for _, el := range dstArticles {
+	//	fmt.Printf("after:%s", el.Title)
+	//	fmt.Println()
+	//}
 
 	log.Print("main process has ended.")
 }

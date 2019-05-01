@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
+	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/highway-star/model"
@@ -13,34 +13,62 @@ import (
 type ScrapeOperator struct {
 }
 
-func (o *ScrapeOperator) Scrape(keyword string, articles *[]model.Article) error {
+const (
+	maxReadPage   = 5
+	minReplyCount = 10
+)
 
-	//searchedPage, err := o.fetchHtml(
-	//	"http://www.ilbe.com/index.php" +
-	//		"?act=IS" +
-	//		"&where=document" +
-	//		"&is_keyword=%EC%9C%84%EC%95%88%EB%B6%80" +
-	//		"&mid=index" +
-	//		"&search_target=title" +
-	//		"&page=1")
+func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 
-	listDoc, err := o.fetchHtml("http://www.ilbe.com/politics")
-	if err != nil {
-		return err
+	found := false
+
+	for i := 0; i < maxReadPage; i++ {
+
+		if found {
+			break
+		}
+
+		listDoc, err := o.fetchHtml(
+			"http://www.ilbe.com/index.php?" +
+				"act=IS" +
+				"&where=document" +
+				"&is_keyword=" + keyword +
+				"&mid=index" +
+				"&search_target=title" +
+				"&page=" + strconv.Itoa(i+1))
+
+		if err != nil {
+			return err
+		}
+
+		listDoc.Find(".searchResult").Find("li").Each(func(index int, s *goquery.Selection) {
+
+			if found {
+				return
+			}
+
+			_, exists := s.Find("img").Attr("src")
+
+			if exists {
+				reply, _ := strconv.Atoi(
+					s.Find("dl").Find("dt").Find("span").Find("em").Text())
+
+				if reply >= minReplyCount {
+					url, _ := s.Find("dl").Find("dt").Find("a").Attr("href")
+					o.analyzeArticle(url, article)
+
+					found = true
+				}
+			}
+		})
 	}
 
-	listDoc.Find("tbody").Find("tr").Each(func(index int, s *goquery.Selection) {
+	return nil
+}
 
-		url, exists := s.Find(".title").Find("a").Attr("href")
+func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) error {
 
-		if exists && strings.HasPrefix(url, "http") {
-
-			detailDoc, _ := o.fetchHtml(url)
-
-			article := model.Article{Title: strings.TrimSpace(detailDoc.Find("div.title").Text())}
-			*articles = append(*articles, article)
-		}
-	})
+	log.Print(url)
 
 	return nil
 }
