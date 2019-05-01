@@ -16,7 +16,7 @@ func init() {
 }
 
 var (
-	keyword = flag.String("keyword", "위안부", "Specify the word to be searched in ilbe.")
+	keyword = flag.String("keyword", "ComfortWoman", "Specify the word to be searched in ilbe.")
 )
 
 func main() {
@@ -44,6 +44,9 @@ func main() {
 	log.Print(srcArticle.Content)
 	log.Print(srcArticle.ThumbnailImageUri)
 	log.Print(srcArticle.ContentImageUris)
+	log.Print(srcArticle.Categories)
+	log.Print(srcArticle.Tags)
+	log.Print(srcArticle.Comments)
 
 	//if err := translator.Translate(srcArticles, &dstArticles); err != nil {
 	//	log.Fatal(err)

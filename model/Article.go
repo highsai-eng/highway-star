@@ -10,6 +10,7 @@ type Article struct {
 	Content           string
 	ThumbnailImageUri string
 	ContentImageUris  []string
+	Categories        []string
 	Tags              []string
 	Comments          []Comment
 }

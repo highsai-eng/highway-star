@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/highway-star/constant"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/highway-star/model"
 )
@@ -31,7 +33,7 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 			break
 		}
 
-		doc, err := o.fetchHtml(o.generateSearchUrl(keyword, i))
+		doc, err := o.fetchHtml(o.generateSearchUrl(constant.Get().Keywords[keyword].Korean, i))
 		if err != nil {
 			return err
 		}
@@ -112,6 +114,13 @@ func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) erro
 	article.Content = content
 	article.ThumbnailImageUri = contentImageUris[0]
 	article.ContentImageUris = contentImageUris
+
+	// TODO:category and tag implements.
+	article.Categories = []string{}
+	article.Tags = []string{}
+
+	// TODO:comment implements.
+	article.Comments = []model.Comment{}
 
 	return nil
 }
