@@ -9,15 +9,15 @@ import (
 	"github.com/highway-star/operator"
 )
 
+var (
+	keyword = flag.String("keyword", "ComfortWoman", "Specify the word to be searched in ilbe.")
+)
+
 func init() {
 	log.SetPrefix("[highway-star]")
 	log.SetFlags(log.Ldate | log.Ltime | log.Lmicroseconds | log.Lshortfile)
 	log.SetOutput(os.Stdout)
 }
-
-var (
-	keyword = flag.String("keyword", "ComfortWoman", "Specify the word to be searched in ilbe.")
-)
 
 func main() {
 
