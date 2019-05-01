@@ -41,6 +41,9 @@ func main() {
 	log.Print(srcArticle.Title)
 	log.Print(srcArticle.Author)
 	log.Print(srcArticle.Published)
+	log.Print(srcArticle.Content)
+	log.Print(srcArticle.ThumbnailImageUri)
+	log.Print(srcArticle.ContentImageUris)
 
 	//if err := translator.Translate(srcArticles, &dstArticles); err != nil {
 	//	log.Fatal(err)

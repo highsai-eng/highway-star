@@ -70,13 +70,34 @@ func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) erro
 		return err
 	}
 
-	uri := strings.TrimSpace(
-		doc.Find("div.originalContent").Find("div.uri").Find("a").Text())
-	title := strings.TrimSpace(
-		doc.Find("div.originalContent").Find("div.title").Text())
-	author := strings.TrimSpace(
-		doc.Find("div.originalContent").Find("div.userInfo").Find("span").Text())
-	dateStr := strings.TrimSpace(doc.Find("div.originalContent").Find("div.date").Text())
+	var (
+		content          string
+		contentImageUris []string
+	)
+
+	readHeader := doc.Find("div.originalContent").Find("div.readHeader")
+	readBody := doc.Find("div.originalContent").Find("div.readBody")
+
+	uri := strings.TrimSpace(readHeader.Find("div.uri").Find("a").Text())
+	title := strings.TrimSpace(readHeader.Find("div.title").Text())
+	author := strings.TrimSpace(readHeader.Find("div.userInfo").Find("span").Text())
+	dateStr := strings.TrimSpace(readHeader.Find("div.date").Text())
+
+	readBody.Find("div#copy_layer_1").Find("p").Each(func(index int, s *goquery.Selection) {
+
+		_, exists := s.Find("img").Attr("src")
+
+		if exists {
+			s.Find("img").Each(func(index int, s *goquery.Selection) {
+				imageUri, _ := s.Attr("src")
+				contentImageUris = append(contentImageUris, imageUri)
+			})
+		} else {
+			if strings.TrimSpace(s.Text()) != "" {
+				content += strings.TrimSpace(s.Text()) + "¥n"
+			}
+		}
+	})
 
 	published, err := time.Parse(layout, dateStr)
 
@@ -88,6 +109,9 @@ func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) erro
 	article.Title = title
 	article.Author = author
 	article.Published = published
+	article.Content = content
+	article.ThumbnailImageUri = contentImageUris[0]
+	article.ContentImageUris = contentImageUris
 
 	return nil
 }
