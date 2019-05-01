@@ -1,16 +1,15 @@
 package model
 
-import (
-	"time"
-)
+import "time"
 
 type Article struct {
-	Url            string
+	Uri            string
 	Title          string
+	Author         string
+	Published      time.Time
 	Content        string
 	ThumbnailImage string
 	OtherImages    []string
 	Tags           []string
-	Published      time.Time
 	Comments       []Comment
 }

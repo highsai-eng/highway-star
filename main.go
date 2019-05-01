@@ -37,22 +37,17 @@ func main() {
 		log.Fatal(err)
 	}
 
+	log.Print(srcArticle.Uri)
+	log.Print(srcArticle.Title)
+	log.Print(srcArticle.Author)
+	log.Print(srcArticle.Published)
+
 	//if err := translator.Translate(srcArticles, &dstArticles); err != nil {
 	//	log.Fatal(err)
 	//}
 	//
 	//if err := uploader.Upload(dstArticles); err != nil {
 	//	log.Fatal(err)
-	//}
-
-	//for _, el := range srcArticles {
-	//	fmt.Printf("befor:%s", el.Title)
-	//	fmt.Println()
-	//}
-	//
-	//for _, el := range dstArticles {
-	//	fmt.Printf("after:%s", el.Title)
-	//	fmt.Println()
 	//}
 
 	log.Print("main process has ended.")

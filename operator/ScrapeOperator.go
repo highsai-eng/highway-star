@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/highway-star/model"
@@ -16,6 +18,7 @@ type ScrapeOperator struct {
 const (
 	maxReadPage   = 5
 	minReplyCount = 10
+	layout        = "2006.01.02 15:04:05"
 )
 
 func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
@@ -28,20 +31,12 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 			break
 		}
 
-		listDoc, err := o.fetchHtml(
-			"http://www.ilbe.com/index.php?" +
-				"act=IS" +
-				"&where=document" +
-				"&is_keyword=" + keyword +
-				"&mid=index" +
-				"&search_target=title" +
-				"&page=" + strconv.Itoa(i+1))
-
+		doc, err := o.fetchHtml(o.generateSearchUrl(keyword, i))
 		if err != nil {
 			return err
 		}
 
-		listDoc.Find(".searchResult").Find("li").Each(func(index int, s *goquery.Selection) {
+		doc.Find(".searchResult").Find("li").Each(func(index int, s *goquery.Selection) {
 
 			if found {
 				return
@@ -55,7 +50,9 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 
 				if reply >= minReplyCount {
 					url, _ := s.Find("dl").Find("dt").Find("a").Attr("href")
-					o.analyzeArticle(url, article)
+					if err := o.analyzeArticle(url, article); err != nil {
+						log.Print(err)
+					}
 
 					found = true
 				}
@@ -68,7 +65,29 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 
 func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) error {
 
-	log.Print(url)
+	doc, err := o.fetchHtml(url)
+	if err != nil {
+		return err
+	}
+
+	uri := strings.TrimSpace(
+		doc.Find("div.originalContent").Find("div.uri").Find("a").Text())
+	title := strings.TrimSpace(
+		doc.Find("div.originalContent").Find("div.title").Text())
+	author := strings.TrimSpace(
+		doc.Find("div.originalContent").Find("div.userInfo").Find("span").Text())
+	dateStr := strings.TrimSpace(doc.Find("div.originalContent").Find("div.date").Text())
+
+	published, err := time.Parse(layout, dateStr)
+
+	if err != nil {
+		return err
+	}
+
+	article.Uri = uri
+	article.Title = title
+	article.Author = author
+	article.Published = published
 
 	return nil
 }
@@ -103,4 +122,15 @@ func (o *ScrapeOperator) fetchHtml(url string) (*goquery.Document, error) {
 	log.Printf("end fetching HTML.")
 
 	return doc, nil
+}
+
+func (o *ScrapeOperator) generateSearchUrl(keyword string, index int) string {
+
+	return "http://www.ilbe.com/index.php?" +
+		"act=IS" +
+		"&where=document" +
+		"&is_keyword=" + keyword +
+		"&mid=index" +
+		"&search_target=title" +
+		"&page=" + strconv.Itoa(index+1)
 }
