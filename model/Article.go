@@ -2,14 +2,15 @@ package model
 
 import "time"
 
+// Article 記事構造体
 type Article struct {
-	Uri               string
+	URI               string
 	Title             string
 	Author            string
 	Published         time.Time
 	Content           string
-	ThumbnailImageUri string
-	ContentImageUris  []string
+	ThumbnailImageURI string
+	ContentImageURIs  []string
 	Categories        []string
 	Tags              []string
 	Comments          []Comment

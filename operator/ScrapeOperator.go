@@ -14,6 +14,7 @@ import (
 	"github.com/highway-star/model"
 )
 
+// ScrapeOperator スクレイピングオペレーター構造体
 type ScrapeOperator struct {
 }
 
@@ -23,6 +24,7 @@ const (
 	layout        = "2006.01.02 15:04:05"
 )
 
+// Scrape スクレイピング実行
 func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 
 	found := false
@@ -33,7 +35,7 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 			break
 		}
 
-		doc, err := o.fetchHtml(o.generateSearchUrl(constant.Get().Keywords[keyword].Korean, i))
+		doc, err := o.fetchHTML(o.generateSearchURL(constant.Get().Keywords[keyword].Korean, i))
 		if err != nil {
 			return err
 		}
@@ -53,6 +55,7 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 				if reply >= minReplyCount {
 					url, _ := s.Find("dl").Find("dt").Find("a").Attr("href")
 					if err := o.analyzeArticle(url, article); err != nil {
+						// TODO:エラー返却
 						log.Print(err)
 					}
 
@@ -67,7 +70,7 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 
 func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) error {
 
-	doc, err := o.fetchHtml(url)
+	doc, err := o.fetchHTML(url)
 	if err != nil {
 		return err
 	}
@@ -91,12 +94,12 @@ func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) erro
 
 		if exists {
 			s.Find("img").Each(func(index int, s *goquery.Selection) {
-				imageUri, _ := s.Attr("src")
-				contentImageUris = append(contentImageUris, imageUri)
+				imageURI, _ := s.Attr("src")
+				contentImageUris = append(contentImageUris, imageURI)
 			})
 		} else {
 			if strings.TrimSpace(s.Text()) != "" {
-				content += strings.TrimSpace(s.Text()) + "¥n"
+				content += strings.TrimSpace(s.Text()) + ":"
 			}
 		}
 	})
@@ -107,13 +110,13 @@ func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) erro
 		return err
 	}
 
-	article.Uri = uri
+	article.URI = uri
 	article.Title = title
 	article.Author = author
 	article.Published = published
 	article.Content = content
-	article.ThumbnailImageUri = contentImageUris[0]
-	article.ContentImageUris = contentImageUris
+	article.ThumbnailImageURI = contentImageUris[0]
+	article.ContentImageURIs = contentImageUris
 
 	// TODO:category and tag implements.
 	article.Categories = []string{}
@@ -125,7 +128,7 @@ func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) erro
 	return nil
 }
 
-func (o *ScrapeOperator) fetchHtml(url string) (*goquery.Document, error) {
+func (o *ScrapeOperator) fetchHTML(url string) (*goquery.Document, error) {
 
 	log.Printf("start fetching HTML. url:%s", url)
 
@@ -157,7 +160,7 @@ func (o *ScrapeOperator) fetchHtml(url string) (*goquery.Document, error) {
 	return doc, nil
 }
 
-func (o *ScrapeOperator) generateSearchUrl(keyword string, index int) string {
+func (o *ScrapeOperator) generateSearchURL(keyword string, index int) string {
 
 	return "http://www.ilbe.com/index.php?" +
 		"act=IS" +

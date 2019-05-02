@@ -8,9 +8,11 @@ import (
 	"github.com/highway-star/model"
 )
 
+// TranslateOperator 翻訳オペレーター構造体
 type TranslateOperator struct {
 }
 
+// Translate 翻訳実行
 func (o TranslateOperator) Translate(srcArticles []model.Article, dstArticles *[]model.Article) error {
 
 	sourceLanguageCode := "ko"

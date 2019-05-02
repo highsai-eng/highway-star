@@ -8,6 +8,7 @@ import (
 	"gopkg.in/resty.v1"
 )
 
+// UploadOperator アップロードオペレーター構造体
 type UploadOperator struct {
 }
 
@@ -17,6 +18,7 @@ const (
 	wordPressEndpoint = "http://nida.xsrv.jp/wp-json/wp/v2/posts"
 )
 
+// Upload アップロード実行
 func (o *UploadOperator) Upload(articles []model.Article) error {
 
 	authInfo := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))

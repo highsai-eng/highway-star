@@ -37,13 +37,13 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Print(srcArticle.Uri)
+	log.Print(srcArticle.URI)
 	log.Print(srcArticle.Title)
 	log.Print(srcArticle.Author)
 	log.Print(srcArticle.Published)
 	log.Print(srcArticle.Content)
-	log.Print(srcArticle.ThumbnailImageUri)
-	log.Print(srcArticle.ContentImageUris)
+	log.Print(srcArticle.ThumbnailImageURI)
+	log.Print(srcArticle.ContentImageURIs)
 	log.Print(srcArticle.Categories)
 	log.Print(srcArticle.Tags)
 	log.Print(srcArticle.Comments)

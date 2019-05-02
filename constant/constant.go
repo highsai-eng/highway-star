@@ -1,9 +1,11 @@
 package constant
 
+// Constant 定数保持構造体
 type Constant struct {
 	Keywords map[string]LangPair
 }
 
+// LangPair 言語ペア構造体
 type LangPair struct {
 	Japanese string
 	Korean   string
@@ -22,6 +24,7 @@ func init() {
 	}
 }
 
+// Get 定数構造体の取得
 func Get() Constant {
 	return constant
 }

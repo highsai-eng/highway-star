@@ -2,6 +2,7 @@ package model
 
 import "time"
 
+// Comment コメント構造体
 type Comment struct {
 	No        int8
 	RepliedNo int8
