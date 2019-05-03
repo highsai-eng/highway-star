@@ -13,7 +13,7 @@ type TranslateOperator struct {
 }
 
 // Translate 翻訳実行
-func (o TranslateOperator) Translate(srcArticles []model.Article, dstArticles *[]model.Article) error {
+func (o TranslateOperator) Translate(srcArticle model.Article, dstArticle *model.Article) error {
 
 	sourceLanguageCode := "ko"
 	targetLanguageCode := "ja"
@@ -28,22 +28,42 @@ func (o TranslateOperator) Translate(srcArticles []model.Article, dstArticles *[
 
 	translateClient := translate.New(sess)
 
-	for _, el := range srcArticles {
-
-		textInput := translate.TextInput{
-			SourceLanguageCode: &sourceLanguageCode,
-			TargetLanguageCode: &targetLanguageCode,
-			Text:               &el.Title,
-		}
-
-		outputText, err := translateClient.Text(&textInput)
-		if err != nil {
-			return err
-		}
-
-		article := model.Article{Title: *outputText.TranslatedText}
-		*dstArticles = append(*dstArticles, article)
+	titleInput := translate.TextInput{
+		SourceLanguageCode: &sourceLanguageCode,
+		TargetLanguageCode: &targetLanguageCode,
+		Text:               &srcArticle.Title,
 	}
+
+	authorInput := translate.TextInput{
+		SourceLanguageCode: &sourceLanguageCode,
+		TargetLanguageCode: &targetLanguageCode,
+		Text:               &srcArticle.Author,
+	}
+
+	contentInput := translate.TextInput{
+		SourceLanguageCode: &sourceLanguageCode,
+		TargetLanguageCode: &targetLanguageCode,
+		Text:               &srcArticle.Content,
+	}
+
+	titleOutput, err := translateClient.Text(&titleInput)
+	if err != nil {
+		return err
+	}
+
+	authorOutput, err := translateClient.Text(&authorInput)
+	if err != nil {
+		return err
+	}
+
+	contentOutput, err := translateClient.Text(&contentInput)
+	if err != nil {
+		return err
+	}
+
+	dstArticle.Title = *titleOutput.TranslatedText
+	dstArticle.Author = *authorOutput.TranslatedText
+	dstArticle.Content = *contentOutput.TranslatedText
 
 	return nil
 }

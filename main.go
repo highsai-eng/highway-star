@@ -26,12 +26,11 @@ func main() {
 	flag.Parse()
 
 	scraper := operator.ScrapeOperator{}
-	//translator := operator.TranslateOperator{}
+	translator := operator.TranslateOperator{}
 	//uploader := operator.UploadOperator{}
 
 	srcArticle := model.Article{}
-	//srcArticles := make([]model.Article, 0)
-	//dstArticles := make([]model.Article, 0)
+	dstArticle := model.Article{}
 
 	if err := scraper.Scrape(*keyword, &srcArticle); err != nil {
 		log.Fatal(err)
@@ -48,10 +47,21 @@ func main() {
 	log.Print(srcArticle.Tags)
 	log.Print(srcArticle.Comments)
 
-	//if err := translator.Translate(srcArticles, &dstArticles); err != nil {
-	//	log.Fatal(err)
-	//}
-	//
+	if err := translator.Translate(srcArticle, &dstArticle); err != nil {
+		log.Fatal(err)
+	}
+
+	log.Print(dstArticle.URI)
+	log.Print(dstArticle.Title)
+	log.Print(dstArticle.Author)
+	log.Print(dstArticle.Published)
+	log.Print(dstArticle.Content)
+	log.Print(dstArticle.ThumbnailImageURI)
+	log.Print(dstArticle.ContentImageURIs)
+	log.Print(dstArticle.Categories)
+	log.Print(dstArticle.Tags)
+	log.Print(dstArticle.Comments)
+
 	//if err := uploader.Upload(dstArticles); err != nil {
 	//	log.Fatal(err)
 	//}

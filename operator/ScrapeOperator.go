@@ -132,9 +132,6 @@ func (o *ScrapeOperator) fetchHTML(url string) (*goquery.Document, error) {
 
 	log.Printf("start fetching HTML. url:%s", url)
 
-	// TODO: add sleep.
-	//time.Sleep(60 * time.Second)
-
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch web page. url:%s", url)
