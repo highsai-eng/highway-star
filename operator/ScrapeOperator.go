@@ -25,7 +25,7 @@ const (
 )
 
 // Scrape スクレイピング実行
-func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
+func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) (eachErr error) {
 
 	found := false
 
@@ -55,8 +55,7 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 				if reply >= minReplyCount {
 					url, _ := s.Find("dl").Find("dt").Find("a").Attr("href")
 					if err := o.analyzeArticle(url, article); err != nil {
-						// TODO:エラー返却
-						log.Print(err)
+						eachErr = err
 					}
 
 					found = true
@@ -65,7 +64,7 @@ func (o *ScrapeOperator) Scrape(keyword string, article *model.Article) error {
 		})
 	}
 
-	return nil
+	return eachErr
 }
 
 func (o *ScrapeOperator) analyzeArticle(url string, article *model.Article) error {
